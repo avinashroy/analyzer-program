@@ -7,7 +7,6 @@ import com.codegrind.analyzer.repository.EmpInfoRepo;
 import com.codegrind.analyzer.repository.GpsInfoRepo;
 import com.codegrind.analyzer.repository.TravelInfoRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +23,8 @@ public class ScheduledJob {
     private TravelInfoRepo travelInfoRepo;
     @Autowired
     private AlertsRepo alertsRepo;
+    @Autowired
+    private Alerts alert;
     private Iterable<GpsInfo> lastTenGpsInfo;
     private GpsInfo firstGpsInfo;
     private GpsInfo lastGpsInfo;
@@ -31,8 +32,6 @@ public class ScheduledJob {
     private double previousLongitude;
     private double currentLatitude;
     private double currentLongitude;
-    @Autowired
-    private Alerts alert;
     Iterator activeTravelIterator;
     Iterator lastTenGpsInfoIterator;
 
@@ -86,17 +85,16 @@ public class ScheduledJob {
             if(distance < 1) {
 
                 System.out.println("\n\nDistance: " + distance + "\n\n");
+                System.out.println("Adding Alert\n\n");
 
-                if(!alertsRepo.findStatusByTravelId(lastGpsInfo.getTravelId(), "INSERT").isPresent()) {
+                if(!alertsRepo.findByTravelId(lastGpsInfo.getTravelId()).isPresent()) {
 
                     alert.setTravelId(lastGpsInfo.getTravelId());
                     alert.setEmpId(lastGpsInfo.getEmpId());
                     alert.setAlertText("Distress to " + empInfoRepo.findById(alert.getEmpId()).get().getEmpName());
                     alert.setAlertStatus("INSERT");
 
-                    System.out.println(alertsRepo.save(alert).getAlertId());
-
-                    System.out.println("ALERT ADDED!");
+                    System.out.println("ALERT ADDED with ID " + alertsRepo.save(alert).getAlertId());
                 } else
                     System.out.println("ALERT already exists");
             }

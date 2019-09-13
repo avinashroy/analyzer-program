@@ -1,5 +1,5 @@
 com/codegrind/analyzer/repository/EmpInfoRepo.class
-com/codegrind/analyzer/Beans/AlertBean.class
+com/codegrind/analyzer/bean/AlertBean.class
 com/codegrind/analyzer/AnalyzerApplication.class
 com/codegrind/analyzer/repository/TravelInfoRepo.class
 com/codegrind/analyzer/model/GpsInfo.class
